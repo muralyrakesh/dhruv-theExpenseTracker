@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<html>
+    <head>
+        
+        <!-- Page title -->
+        <title>Dhruv | The Expense Tracker</title>
+        
+        <script src="app/lib/angular.js"></script>
+        <script src="app/lib/ng-google-chart.js"></script>
+        <script src="app/app.js"></script>
+        <script src="app/controller/mainController.js"></script>
+        <script src="vendor/jquery/dist/jquery.min.js"></script>
+        <script src="vendor/jquery-ui/jquery-ui.min.js"></script>
+        <script src="vendor/slimScroll/jquery.slimscroll.min.js"></script>
+        <script src="vendor/bootstrap/dist/js/bootstrap.min.js"></script>
+        <script src="vendor/jquery-flot/jquery.flot.js"></script>
+        <script src="vendor/jquery-flot/jquery.flot.resize.js"></script>
+        <script src="vendor/jquery-flot/jquery.flot.pie.js"></script>
+        <script src="vendor/flot.curvedlines/curvedLines.js"></script>
+        <script src="vendor/jquery.flot.spline/index.js"></script>
+        <script src="vendor/metisMenu/dist/metisMenu.min.js"></script>
+        <script src="vendor/iCheck/icheck.min.js"></script>
+        <script src="vendor/peity/jquery.peity.min.js"></script>
+        <script src="vendor/sparkline/index.js"></script>
+
+        <!-- App scripts -->
+        <script src="scripts/homer.js"></script>
+        <script src="scripts/charts.js"></script>
+        
+        <link rel="stylesheet" href="vendor/fontawesome/css/font-awesome.css" />
+        <link rel="stylesheet" href="vendor/metisMenu/dist/metisMenu.css" />
+        <link rel="stylesheet" href="vendor/animate.css/animate.css" />
+        <link rel="stylesheet" href="vendor/bootstrap/dist/css/bootstrap.css" />
+
+        <!-- App styles -->
+        <link rel="stylesheet" href="fonts/pe-icon-7-stroke/css/pe-icon-7-stroke.css" />
+        <link rel="stylesheet" href="fonts/pe-icon-7-stroke/css/helper.css" />
+        <link rel="stylesheet" href="styles/style.css">
+    </head>
+    <body ng-app="dhruv">
+        <!-- Simple splash screen-->
+        <div class="splash"> <div class="color-line"></div>
+            <div class="splash-title">
+                <h1>Dhruv - The Expense Tracker</h1>
+                <img src="images/loading-bars.svg" width="64" height="64" /> 
+            </div> 
+        </div>
+        
+        <!-- Header -->
+        <div id="header" ng-include src="'/app/views/header.html'"></div>
+        
+        <!-- Navigator -->
+        <aside id="menu">
+            <div id="navigation" ng-include src="'/app/views/navigator.html'"></div>
+        </aside>
+        
+        <div id="wrapper" ng-controller="mainController" ng-include src="'/app/views/mainFrame.html'"></div>
+
+        
+        
+
+    </body>
+</html>
