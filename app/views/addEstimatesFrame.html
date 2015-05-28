@@ -1,0 +1,63 @@
+<div class="col-lg-12">
+        <div class="hpanel">
+            <div class="panel-heading">
+                <div class="panel-tools">
+                    <a class="showhide"><i class="fa fa-chevron-up"></i></a>
+                    <a class="closebox"><i class="fa fa-times"></i></a>
+                </div>
+                Estimates
+            </div>
+            <div class="panel-body">
+                <div class="text-center small">
+                                <i class="fa fa-laptop"></i> Estimates for the month
+                            </div>
+                <div class = "row">
+                <div class="col-md-6">
+                            
+                            <div class="row">
+                                    <label class="col-sm-6 control-label">What is your Compensation?</label>
+                                    <div class="col-md-4">
+                                        <input type="number" class="form-control" ng-model="estimatedChecking"/>
+                                    </div>
+                                </div>
+                        <br/>
+                        <div class="row">
+                                    <label class="col-sm-6 control-label">How much do you intend to Save?</label>
+                                    <div class="col-md-4">
+                                    <input type="number" class="form-control" ng-model="estimatedSaving"/>
+                                    </div>
+                            </div>
+                        <br/>
+                        <div class="row">
+                                    <label class="col-sm-6 control-label">How do you want to track your progress?</label>
+                                    <div class="col-md-4">
+                                    <select class="form-control m-b" name="account" ng-model="estimatedDuration" 
+                                        ng-options="duration for duration in availableDurations" ></select> 
+                                    </div>
+                                
+                                
+                                </div>
+                   
+                        </div>
+                        <div class="col-md-6">
+                            <div style="height: 170px" google-chart chart="estimatesChartObject"></div>
+                        </div>
+                    </div>
+                
+                <div class="hr-line-dashed"></div>
+                                            <div class="form-group">
+                                                <div class="col-sm-8 col-sm-offset-2">
+                                                     <button class="btn btn-default" type="submit" ng-click="resetEstimates();">Cancel</button>
+                                <button class="btn btn-primary" type="submit" ng-click="submitEstimates();">Save Changes</button>
+                                                </div>
+                                            </div>
+                    
+            </div>
+            <div class="panel-footer">
+                    <span class="pull-right">
+                          You have two new messages from <a href="">Monica Bolt</a>
+                    </span>
+                Last update: 21.05.2015
+            </div>
+        </div>
+    </div>

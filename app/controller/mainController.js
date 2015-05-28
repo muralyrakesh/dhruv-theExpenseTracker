@@ -1,6 +1,6 @@
 (function(){
     
-    var mainController = function ($scope, $timeout) {
+    var mainController = function ($scope, $modal, $timeout) {
         $timeout(function() {
             parseLocation();
             if (!$scope.userName) {
@@ -13,7 +13,7 @@
                 $scope.catagoryFilter = {cat:''};
                 $scope.showInformationStatistics = false;
                 $scope.showEstimates = true;
-                $scope.showHello = true;
+                $scope.showAddExpense = true;
                 $scope.estimatesChartObject = {type:'PieChart'};
                 $scope.actualsChartObject = {type:'PieChart'};
                 $scope.estimatesDashboardChartObject = {type:'PieChart'};
@@ -23,6 +23,8 @@
                     $scope.estimatedDuration = '';
                     $scope.estimatedChecking = null;
                     $scope.estimatedSaving = null;
+                    $scope.allExpenses = [];
+                    $scope.peekExpenses = [];
                     $scope.expense = {};
                     $scope.expense.date = new Date();
 
@@ -61,29 +63,86 @@
 
                 $scope.showDashBoard = function() {
                     $scope.showInformationStatistics = true;
+                    $scope.showAddExpense = false;
                     $scope.showEstimates = false;
-                    $scope.showActuals = false;
+                    if ($scope.allExpenses != null && $scope.allExpenses.length > 0) {
+                        $scope.showActualsList = true;
+                        $scope.showActuals = false;
+                    } else {
+                        $scope.showActuals = true;
+                        $scope.showActualsList = false;
+                    }
+                    $scope.showAllActuals = false;
                 }
 
                 $scope.showEstimate = function() {
-                    $scope.showHello = false;
                     $scope.showInformationStatistics = false;
                     $scope.showEstimates = true;
                     $scope.showActuals = false;
+                    $scope.showAllActuals = false;
+                    $scope.showActualsList = false;
                 }
 
                 $scope.showActual = function() {
                     $scope.showInformationStatistics = false;
+                    $scope.showAllActuals = true;
+                    $scope.showAddExpense = false;
                     $scope.showEstimates = false;
-                    $scope.showActuals = true;
+                    
+                }
+                
+                $scope.deleteActual = function(exp) {
+                    //console.log(exp);
+                    var modalInstance = $modal.open({
+                      templateUrl: 'deleteModal.html',
+                      controller: 'mainController'
+                        
+                    });
+                    
+                    modalInstance.result.then(function (selectedItem) {
+                      $scope.selected = selectedItem;
+                    }, function () {
+                      $log.info('Modal dismissed at: ' + new Date());
+                    });
+                    $scope.selectedItem = exp;
+                    
+                }
+                
+                $scope.deleteExp = function() {
+                 console.log($scope.selectedItem);
+                    $modalInstance.close($scope.selectedItem);
+                }
+                
+                
+                $scope.editActual = function(exp) {
+                    console.log(exp);
+                }
+                
+                $scope.viewActual = function(exp) {
+                    console.log(exp);
                 }
                 
                 $scope.saveExpense = function() {
-                    console.log($scope.expense);
+                    $scope.actualsChecking[1].v = parseFloat($scope.actualsChecking[1].v) - parseFloat($scope.expense.ammount);
+                    $scope.actualsSpending[1].v = parseFloat($scope.actualsSpending[1].v) + parseFloat($scope.expense.ammount);
+                    $scope.allExpenses.push($scope.expense);
+                    if ($scope.peekExpenses != null && $scope.peekExpenses.length == 4) {
+                        $scope.peekExpenses.splice(0, 1);
+                    }
+                    $scope.peekExpenses.push($scope.expense);
+                    $scope.showActualsList = true;
+                    $scope.showEstimates = false;
+                    $scope.showActuals = false;
+                    $scope.showInformationStatistics = true;
+                    $scope.showAddExpense = false;
+                    $scope.resetExpense();
                 }
                 
                 $scope.addExpense = function() {
+                    $scope.showInformationStatistics = true;
                     $scope.showActuals = true;
+                    $scope.showActualsList = false;
+                    $scope.showAddExpense = false;
                 }
 
                 $scope.resetEstimates = function() {
@@ -111,7 +170,7 @@
                         {v: estimate.checking},
                     ];
                     $scope.actualsSpending = [
-                        {v: "Spending"},
+                        {v: "Spent"},
                         {v: estimate.spending},
                     ];
                     $scope.actualsSavings = [

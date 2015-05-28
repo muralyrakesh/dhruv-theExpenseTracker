@@ -34,6 +34,8 @@ $(document).ready(function () {
     // Function for collapse hpanel
     $('.showhide').click(function (event) {
         event.preventDefault();
+        var elements = $(this).parent;
+        alert(elements);
         var hpanel = $(this).closest('div.hpanel');
         var icon = $(this).find('i:first');
         var body = hpanel.find('div.panel-body');
