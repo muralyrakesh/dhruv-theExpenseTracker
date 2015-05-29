@@ -26,6 +26,21 @@
 
 </head>
 <body ng-controller="mainController">
+    
+    <script type="text/ng-template" id="deleteModalContent.html">
+        <div class="modal-header color-line" style = "height:10px;">
+            <h3 class="modal-title">Delete</h3>
+        </div>
+        <div class="modal-body">
+            
+            Are you sure?
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-xs btn-primary" ng-click="ok()">Delete</button>
+            <button class="btn btn-xs btn-warning" ng-click="cancel()">Cancel</button>
+        </div>
+    </script>
+    
 
 <!-- Simple splash screen-->
 <div class="splash"> <div class="color-line"></div><div class="splash-title"><h1>Dhruv - The Expense Tracker</h1><img src="app/images/loading-bars.svg" width="64" height="64" /> </div> </div>
@@ -45,18 +60,17 @@
 <div id="wrapper">
 
 <div class="content ">
-<div class="row" ng-show="showInformationStatistics" style = "height:100px;">
-    <div class="col-lg-12">
-        <div class="hpanel">
-            <div class="panel-heading">
-                <div class="panel-tools">
-                    <a class="showhide"><i class="fa fa-chevron-up"></i></a>
-                    <a class="closebox"><i class="fa fa-times"></i></a>
+    <div class="row" ng-show="showInformationStatistics" style = "height:100px;">
+        <div class="col-lg-12">
+            <div class="hpanel">
+                <div class="panel-heading">
+                    <div class="panel-tools">
+                        <a class="showhide"><i class="fa fa-chevron-up"></i></a>
+                    </div>
+                    Information and statistics
                 </div>
-                Information and statistics
-            </div>
-            <div class="panel-body">
-                <div class="row">
+                <div class="panel-body">
+                    <div class="row">
                         <div class="col-md-6">
                             <div class="text-center small">
                                 <i class="fa fa-laptop"></i> Estimates for the month
@@ -72,90 +86,69 @@
                     </div>
                     <div class = "row">
                         <div class="col-md-12">
-                            
-                            
-                            
-                                    <form method="get" class="form-horizontal" ng-show="showActuals">
-                                        <div class="row">
-                                            <label class="col-md-2 control-label">Ammount</label>
-                                            <div class="col-md-4">
-                                                <input type="text" placeholder="Ammount" class="form-control" 
-                                                       ng-model="expense.ammount">
-                                            </div>
-                                             <label class="col-md-2 control-label">Catagory</label>
-                                            <div class="col-md-4">
-                                                <input type="text" placeholder="Catagory" class="form-control"
-                                                    ng-model="expense.catagory" 
-                                                    typeahead="cat for cat in catagories | filter:$viewValue | limitTo:8" 
-                                                       class="form-control">                                                
-                                            </div> 
+                            <form method="get" class="form-horizontal" ng-show="showActuals">
+                                <div class="row">
+                                    <label class="col-md-2 control-label">Ammount</label>
+                                    <div class="col-md-4">
+                                        <input type="text" placeholder="Ammount" class="form-control" ng-model="expense.ammount">
+                                    </div>
+                                     <label class="col-md-2 control-label">Catagory</label>
+                                    <div class="col-md-4">
+                                        <input type="text" placeholder="Catagory" class="form-control" ng-model="expense.catagory" typeahead="cat for cat in catagories | filter:$viewValue | limitTo:8" class="form-control">                                                       </div> 
+                                </div>
+                                <br/>
+                                <div class="row">
+                                    <label class="col-md-2 control-label">Description</label>
+                                    <div class="col-md-4">
+                                        <input type="text" placeholder="Description" class="form-control" ng-model="expense.desc">
+                                    </div>
+                                    <label class="col-md-2 control-label">Date</label>
+                                    <div class="col-md-4">
+                                        <input type="text" placeholder="Date" class="form-control" datepicker-popup="yyyy/MM/dd" ng-model="expense.date" is-open="opened" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" 
+                                        ng-required="true" close-text="Close" ng-click="openCalander($event)">
+                                    </div>
+                                </div>
+                                <div class="hr-line-dashed"></div>
+                                <div>
+                                    <div>
+                                        <div class="col-sm-8 col-sm-offset-2" style="width:auto;">
+                                            <button class="btn btn-xs btn-default" type="submit" 
+                                                    ng-click="resetExpense();">Cancel</button>
+                                            <button class="btn btn-xs btn-primary" type="submit" ng-click="saveExpense();">Save changes</button>
                                         </div>
-                                        <br/>
-                                        <div class="row">
-                                            <label class="col-md-2 control-label">Description</label>
-                                            <div class="col-md-4">
-                                                <input type="text" placeholder="Description" class="form-control" 
-                                                       ng-model="expense.desc">
-                                            </div>
-                                            <label class="col-md-2 control-label">Date</label>
-                                            <div class="col-md-4">
-                                                <input type="text" placeholder="Date" class="form-control"
-                                                       datepicker-popup="yyyy/MM/dd" ng-model="expense.date" is-open="opened" 
-                                                       datepicker-options="dateOptions" date-disabled="disabled(date, mode)" 
-                                                       ng-required="true" close-text="Close" ng-click="openCalander($event)"></div>
-                                           
-                                            
-                                            
-                                            </div>
-                                        
-                                        
-                                        <div class="hr-line-dashed"></div>
-                                        <div>
-                                            <div>
-                                                <div class="col-sm-8 col-sm-offset-2" style="width:auto;">
-                                                    <button class="btn btn-xs btn-default" type="submit" 
-                                                            ng-click="resetExpense();">Cancel</button>
-                                                    <button class="btn btn-xs btn-primary" type="submit" ng-click="saveExpense();">Save changes</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        
-                                    </form>
-                                
-                            
-                            
-                            
-                            
-                             <table class="table table-striped" ng-show="showActualsList" >
+                                    </div>
+                                </div>
+                            </form>
+                            <table class="table table-striped" ng-show="showActualsList" >
                                 <thead>
                                     <th ng-click="sortByFunction('catagory')">Catagory</th>
                                     <th ng-click="sortByFunction('desc')">Description</th>
                                     <th ng-click="sortByFunction('ammount')">Ammount</th>
                                     <th ng-click="sortByFunction('date')">Date</th>
-                                    
-                                    <th colspan="3" style="align:right;"><button class="btn btn-xs btn-primary" type="submit" ng-click="addExpense();">Add Expense</button></th>
-                               </thead>
+                                    <th colspan="2">&nbsp;</th>
+                                    <th style="text-align:right;padding-left: 35px;cursor:pointer;">
+                                        <span class="glyphicon glyphicon-plus" ng-click="addExpense();"></span>
+                                    </th>
+                                </thead>
                                 <tr ng-repeat= "expense in peekExpenses track by $index | orderBy:sortBy:reverse | filter : expenseFilter" >
                                     <td>{{expense.catagory}}</td>
                                     <td>{{expense.desc}}</td>
                                     <td>{{expense.ammount | currency}}</td>
                                     <td>{{expense.date | date}}</td>
-                                    <td><span class="glyphicon glyphicon-search" ng-click="viewActual(expense)"></span></td>
-                                    <td><span class="glyphicon glyphicon-edit" ng-click="editActual(expense)"></span></td>
-                                    <td><span class="glyphicon glyphicon-trash" ng-click="deleteActual(expense)"></span></td>
-
+                                    <!--<td><span class="glyphicon glyphicon-search" ng-click="viewActual(expense)" style="cursor:pointer;"></span></td> -->
+                                    <td colspan="3" align="right" style="cursor:pointer;">
+                                        <span class="glyphicon glyphicon-edit" ng-click="editActual(expense)"></span> | 
+                                        <span class="glyphicon glyphicon-trash" ng-click="deleteActual(expense)"></span>
+                                    </td>
                                 </tr>
                             </table>   
-                    <button class="btn btn-xs btn-primary" type="submit" ng-click="addExpense();" ng-show="showAddExpense">Add Expense</button>
-                            
+                            <button class="btn btn-xs btn-primary" type="submit" ng-click="addExpense();" ng-show="showAddExpense">Add Expense</button>
                         </div>
-                </div>
-                
+                    </div>
+               </div>
             </div>
-            
         </div>
     </div>
-</div>
     
     <div class="row" ng-show="showEstimates">
     <div class="col-lg-12">
@@ -230,24 +223,74 @@
             </div>
             <div class="panel-body">
                 <div class = "row">
+                    <div class="col-md-12">
+                        <form method="get" class="form-horizontal" ng-show="showAct">
+                                        <div class="row">
+                                            <label class="col-md-2 control-label">Ammount</label>
+                                            <div class="col-md-4">
+                                                <input type="text" placeholder="Ammount" class="form-control" 
+                                                       ng-model="expense.ammount">
+                                            </div>
+                                             <label class="col-md-2 control-label">Catagory</label>
+                                            <div class="col-md-4">
+                                                <input type="text" placeholder="Catagory" class="form-control"
+                                                    ng-model="expense.catagory" 
+                                                    typeahead="cat for cat in catagories | filter:$viewValue | limitTo:8" 
+                                                       class="form-control">                                                
+                                            </div> 
+                                        </div>
+                                        <br/>
+                                        <div class="row">
+                                            <label class="col-md-2 control-label">Description</label>
+                                            <div class="col-md-4">
+                                                <input type="text" placeholder="Description" class="form-control" 
+                                                       ng-model="expense.desc">
+                                            </div>
+                                            <label class="col-md-2 control-label">Date</label>
+                                            <div class="col-md-4">
+                                                <input type="text" placeholder="Date" class="form-control"
+                                                       datepicker-popup="yyyy/MM/dd" ng-model="expense.date" is-open="opened" 
+                                                       datepicker-options="dateOptions" date-disabled="disabled(date, mode)" 
+                                                       ng-required="true" close-text="Close" ng-click="openCalander($event)"></div>
+                                           
+                                            
+                                            
+                                            </div>
+                                        
+                                        
+                                        <div class="hr-line-dashed"></div>
+                                        <div>
+                                            <div>
+                                                <div class="col-sm-8 col-sm-offset-2" style="width:auto;">
+                                                    <button class="btn btn-xs btn-default" type="submit" 
+                                                            ng-click="resetExpense();">Cancel</button>
+                                                    <button class="btn btn-xs btn-primary" type="submit" ng-click="saveExpense();">Save changes</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                    </form>
+                    </div>
+                </div>
+                <div class = "row">
                 <div class="col-md-12">
-                            <table class="table table-striped">
+                    <input type="text" class="form-control" ng-model="searchBy" style = "width:200px;" placeholder="Filter"/>        
+                    <table class="table table-striped">
                                 <thead>
-                                    <th ng-click="sortByFunction('catagory')">Catagory</th>
-                                    <th ng-click="sortByFunction('desc')">Description</th>
-                                    <th ng-click="sortByFunction('ammount')">Ammount</th>
-                                    <th ng-click="sortByFunction('date')">Date</th>
-                                    
+                                    <th>Catagory</th>
+                                    <th>Description</th>
+                                    <th>Ammount</th>
+                                    <th>Date</th>
                                     <th colspan="3" style="align:right;">&nbsp;</th>
                                </thead>
-                                <tr ng-repeat= "expense in allExpenses track by $index | orderBy:sortBy:reverse">
+                                <tr ng-repeat= "expense in allExpenses | filter:searchBy">
                                     <td>{{expense.catagory}}</td>
                                     <td>{{expense.desc}}</td>
                                     <td>{{expense.ammount | currency}}</td>
                                     <td>{{expense.date | date}}</td>
-                                    <td><span class="glyphicon glyphicon-search" ng-click="viewActual(expense)"></span></td>
-                                    <td><span class="glyphicon glyphicon-edit" ng-click="editActual(expense)"></span></td>
-                                    <td><span class="glyphicon glyphicon-trash" ng-click="deleteActual(expense)"></span></td>
+                                    <!-- <td><span class="glyphicon glyphicon-search" ng-click="viewActual(expense)" style="cursor:pointer;"></span></td>-->
+                                    
+                                    <td colspan="3" align="right"><span class="glyphicon glyphicon-edit" ng-click="editAct(expense)" style="cursor:pointer;"></span> | <span class="glyphicon glyphicon-trash" ng-click="deleteActual(expense)" style="cursor:pointer;"></span></td>
 
                                 </tr>
                             </table>  
@@ -288,6 +331,7 @@
 <script src="app/lib/ng-google-chart.js"></script>
 
 <script src="app/controller/mainController.js"></script>
+<script src="app/controller/modalControllers.js"></script> 
 <script src="app/lib/bootstrap-dialog.js"></script>
 
 <!-- App scripts -->

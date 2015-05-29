@@ -14,6 +14,7 @@
                 $scope.showInformationStatistics = false;
                 $scope.showEstimates = true;
                 $scope.showAddExpense = true;
+                $scope.showAct = false;
                 $scope.estimatesChartObject = {type:'PieChart'};
                 $scope.actualsChartObject = {type:'PieChart'};
                 $scope.estimatesDashboardChartObject = {type:'PieChart'};
@@ -91,51 +92,75 @@
                     
                 }
                 
-                $scope.deleteActual = function(exp) {
-                    //console.log(exp);
+                $scope.deleteActual = function(exp, size) {
                     var modalInstance = $modal.open({
-                      templateUrl: 'deleteModal.html',
-                      controller: 'mainController'
-                        
+                      animation: true,
+                      templateUrl: 'deleteModalContent.html',
+                      controller: 'deleteModelController',
+                      size: size,
+                      resolve: {
+                        item: function () {
+                          return exp;
+                        }
+                      }
                     });
-                    
+
                     modalInstance.result.then(function (selectedItem) {
-                      $scope.selected = selectedItem;
+                        $scope.actualsSpending[1].v = parseFloat($scope.actualsSpending[1].v) + parseFloat(selectedItem.ammount);
+                        var peekIndex = $scope.peekExpenses.indexOf(selectedItem);
+                        var allExpensesIndex = $scope.allExpenses.indexOf(selectedItem);
+                        $scope.peekExpenses.splice(peekIndex, 1);
+                        $scope.allExpenses.splice(allExpensesIndex, 1);
                     }, function () {
-                      $log.info('Modal dismissed at: ' + new Date());
+                      console.log('Modal dismissed at: ' + new Date());
                     });
-                    $scope.selectedItem = exp;
                     
                 }
                 
-                $scope.deleteExp = function() {
-                 console.log($scope.selectedItem);
-                    $modalInstance.close($scope.selectedItem);
-                }
                 
                 
                 $scope.editActual = function(exp) {
                     console.log(exp);
+                    $scope.showActuals = true;
+                    $scope.expense = exp;
                 }
                 
-                $scope.viewActual = function(exp) {
+                $scope.editAct = function(exp) {
+                    console.log(exp);
+                    $scope.showAct = true;
+                    $scope.expense = exp;
+                }
+                
+                $scope.viewActual = function(exp, size) {
                     console.log(exp);
                 }
                 
                 $scope.saveExpense = function() {
                     $scope.actualsChecking[1].v = parseFloat($scope.actualsChecking[1].v) - parseFloat($scope.expense.ammount);
                     $scope.actualsSpending[1].v = parseFloat($scope.actualsSpending[1].v) + parseFloat($scope.expense.ammount);
-                    $scope.allExpenses.push($scope.expense);
-                    if ($scope.peekExpenses != null && $scope.peekExpenses.length == 4) {
-                        $scope.peekExpenses.splice(0, 1);
+                    if ($scope.allExpenses != null && $scope.allExpenses.indexOf($scope.expense) === -1) {
+                        $scope.allExpenses.push($scope.expense);
+                       
                     }
-                    $scope.peekExpenses.push($scope.expense);
-                    $scope.showActualsList = true;
-                    $scope.showEstimates = false;
-                    $scope.showActuals = false;
-                    $scope.showInformationStatistics = true;
-                    $scope.showAddExpense = false;
-                    $scope.resetExpense();
+                    
+                    if ($scope.peekExpenses != null && $scope.peekExpenses.indexOf($scope.expense) === -1) {
+                       if ($scope.peekExpenses != null && $scope.peekExpenses.length === 4) {
+                           $scope.peekExpenses.splice(0, 1);
+                        }
+                        $scope.peekExpenses.push($scope.expense);
+                       
+                    }
+                    if ($scope.showAct) {
+                        $scope.showAct = false;
+                    } else {
+                        $scope.showActualsList = true;
+                        $scope.showEstimates = false;
+                        $scope.showActuals = false;
+                        $scope.showInformationStatistics = true;
+                        $scope.showAddExpense = false;
+                    }
+                     $scope.resetExpense();
+                    
                 }
                 
                 $scope.addExpense = function() {
@@ -151,6 +176,8 @@
                 
                 $scope.resetExpense = function() {
                     $scope.expense = {date:new Date()};
+                     $scope.showActuals = false;
+                    $scope.showAct = false;
                 }
 
                 $scope.submitEstimates = function() {
