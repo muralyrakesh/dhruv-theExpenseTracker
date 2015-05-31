@@ -1,14 +1,169 @@
 (function(){
+   
     
-    var mainController = function ($scope, $modal, $timeout) {
-        $timeout(function() {
-            parseLocation();
-            if (!$scope.userName) {
-                    BootstrapDialog.show({
-                    title: 'Login',
-                    message: $('<div></div>').load('app/login/login.html')
-                });
+  var facebookLogin = function($rootScope, $window, sAuth) {
+
+  $rootScope.user = {};
+
+  $window.fbAsyncInit = function() {
+    // Executed when the SDK is loaded
+
+    FB.init({ 
+
+      /* 
+       The app id of the web app;
+       To register a new app visit Facebook App Dashboard
+       ( https://developers.facebook.com/apps/ ) 
+      */
+
+        appId:'1400258100297949',
+      
+
+      /* 
+       Adding a Channel File improves the performance 
+       of the javascript SDK, by addressing issues 
+       with cross-domain communication in certain browsers. 
+      */
+
+      channelUrl: 'app/channel.html', 
+
+      /* 
+       Set if you want to check the authentication status
+       at the start up of the app 
+      */
+
+      status: true, 
+
+      /* 
+       Enable cookies to allow the server to access 
+       the session 
+      */
+
+      cookie: true, 
+
+      /* Parse XFBML */
+
+      xfbml: true 
+    });
+      
+      FB.Event.subscribe('auth.login', function(){
+            window.location.href = 'index.html';
+        });
+      FB.Event.subscribe('auth.logout', function(){
+        window.location.href = 'login.html';
+    });
+    sAuth.watchLoginChange();
+
+  };
+
+  // Are you familiar to IIFE ( http://bit.ly/iifewdb ) ?
+
+  (function(d){
+    // load the Facebook javascript SDK
+
+    var js, 
+    id = 'facebook-jssdk', 
+    ref = d.getElementsByTagName('script')[0];
+
+    if (d.getElementById(id)) {
+      return;
+    }
+
+    js = d.createElement('script'); 
+    js.id = id; 
+    js.async = true;
+    js.src = "//connect.facebook.net/en_US/all.js";
+
+    ref.parentNode.insertBefore(js, ref);
+
+  }(document));
+
+}
+  
+  var authenticationServiceFactory = function($rootScope) {
+    
+      authenticationServiceFactory.login =function() {
+      
+          FB.login(function(response) {
+              console.log(response);
+              if (response.status === 'connected') {
+                  FB.api('/me', function(response) {
+
+                    $rootScope.$apply(function() { 
+                        $rootScope.user = response; 
+                        $rootScope.profilePic = "http://graph.facebook.com/"+$rootScope.user.id+"/picture?type=normal";
+                    });
+
+               });
+              } else {
+                window.location.href = 'login.html';
+              }
+              
+          });
+      
+      }
+      
+      authenticationServiceFactory.watchLoginChange = function() {
+          FB.Event.subscribe('auth.authResponseChange', function(res) {
+            if (res.status === 'connected') {
+              /* 
+               The user is already logged, 
+               is possible retrieve his personal info
+              */
+              FB.api('/me', function(res) {
+
+                    $rootScope.$apply(function() { 
+                        $rootScope.user = res; 
+                        $rootScope.profilePic = "http://graph.facebook.com/"+$rootScope.user.id+"/picture?type=normal";
+                    });
+
+               });
+
+              /*
+               This is also the point where you should create a 
+               session for the current user.
+               For this purpose you can use the data inside the 
+               res.authResponse object.
+              */
+
             } else {
+              window.location.href = 'login.html';
+            }
+
+            });
+      }
+    
+    
+    authenticationServiceFactory.logout = function() {
+
+        FB.logout(function(response) {
+
+            $rootScope.$apply(function() { 
+
+              $rootScope.user = {}; 
+                window.location.href = 'login.html';
+
+            }); 
+
+        });
+
+    }
+    
+    return authenticationServiceFactory;
+  }
+    
+    var mainController = function ($scope, $modal, $timeout, $rootScope, sAuth) {
+        $timeout(function() {
+                
+                $scope.logOutFromApp = function() {
+                    sAuth.logout();
+                
+                }
+                
+                $scope.fbLogin = function() {
+                    sAuth.login();
+                }
+                
                 $scope.catagories = ['Grocery','Game', 'Goose', 'Ghost', 'Dress', 'Car'];
                 $scope.catagoryFilter = {cat:''};
                 $scope.showInformationStatistics = false;
@@ -247,7 +402,7 @@
                 }
 
                 init();
-            }
+            
         }, 500);
         
         
@@ -311,6 +466,8 @@
         
     };
     angular.module('dhruv', ['googlechart', 'ui.bootstrap']);
+    angular.module('dhruv').factory('sAuth', authenticationServiceFactory);
+    angular.module('dhruv').run(facebookLogin);
     angular.module('dhruv').controller('mainController', mainController);
     
 }());

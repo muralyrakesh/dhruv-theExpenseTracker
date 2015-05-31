@@ -1,28 +1,25 @@
 <div class="profile-picture">
             <a href="index.html">
                 <div style = "height:76px;width:76px;margin-left:25px;">
-                    <img src="app/images/profile.jpg" class="img-circle m-b" alt="logo" align="middle">
+                     <img ng-src="{{profilePic}}" class="img-circle m-b" alt="logo" align="middle">
                 </div>
                 
             </a>
 
-            <div class="stats-label text-color">
-                <span class="font-extra-bold font-uppercase">{{userName}}</span>
-
-                <div class="dropdown">
-                    <a href="#" data-toggle="dropdown">
-                        <small class="text-muted">Logout <b class="caret"></b></small>
-                    </a>
-                    
-                </div>
+            <div class="stats-label text-color" style = "padding-top:30px;">
+                <span class="font-extra-bold font-uppercase">{{user.name}}</span>
+                 
+                <span ng-click="logOutFromApp();" style = "cursor:pointer;">
+                        Logout
+                </span>
 
 
                 
-                <div>
+                <div ng-show = "actualsSavings[1].v">
                     <h4 class="font-extra-bold m-b-xs">
-                        $260 104,200
+                        {{actualsSavings[1].v | currency}}
                     </h4>
-                    <small class="text-muted">Your Savings so far.</small>
+                    <small class="text-muted">Your Estimated Savings.</small>
                 </div>
             </div>
         </div>

@@ -73,7 +73,7 @@
     console.log('Welcome!  Fetching your information.... ');
       
     FB.api('/me', function(response) {
-      console.log('Successful login for: ' + response.name);
+      console.log('Successful login for: ' + response);
       window.location.href = "index.html?response="+response.name;
         
     });
