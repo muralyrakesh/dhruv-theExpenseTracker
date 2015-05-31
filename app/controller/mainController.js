@@ -164,7 +164,7 @@
                     sAuth.login();
                 }
                 
-                $scope.catagories = ['Grocery','Game', 'Goose', 'Ghost', 'Dress', 'Car'];
+                $scope.catagories = [];
                 $scope.catagoryFilter = {cat:''};
                 $scope.showInformationStatistics = false;
                 $scope.showEstimates = true;
@@ -291,6 +291,10 @@
                 }
                 
                 $scope.saveExpense = function() {
+                    if ($scope.catagories.indexOf($scope.expense.catagory) === -1) {
+                        $scope.catagories.push($scope.expense.catagory);
+                    }
+                    
                     $scope.actualsChecking[1].v = parseFloat($scope.actualsChecking[1].v) - parseFloat($scope.expense.ammount);
                     $scope.actualsSpending[1].v = parseFloat($scope.actualsSpending[1].v) + parseFloat($scope.expense.ammount);
                     if ($scope.allExpenses != null && $scope.allExpenses.indexOf($scope.expense) === -1) {
