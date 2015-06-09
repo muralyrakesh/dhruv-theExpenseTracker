@@ -23,53 +23,49 @@
     <link rel="stylesheet" href="app/fonts/pe-icon-7-stroke/css/pe-icon-7-stroke.css" />
     <link rel="stylesheet" href="app/fonts/pe-icon-7-stroke/css/helper.css" />
     <link rel="stylesheet" href="app/styles/style.css">
-    <script src="https://apis.google.com/js/client:platform.js" async defer></script>
+    
 </head>
-<body class="blank" ng-app="dhruv" style="background-image: url(app/images/money_background_201622.jpg)">
+<body class="blank" ng-app="dhruv">
 
 
 
 <div class="color-line"></div>
 
-<div class="login-container" ng-controller = "mainController" align="center">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="text-center m-b-md">
-                &nbsp;
-            </div>
-            <div class="text-center m-b-md">
-                &nbsp;
-            </div>
-            <div class="text-center m-b-md">
-                &nbsp;
-            </div>
-            <div class="text-center m-b-md">
-                &nbsp;
-            </div>
-            <div >
-                <div>
-                    <span ng-click="fbLogin();" style = "cursor:pointer;background-color:#3B5998;width:340px;text-align:left;border-radius:17px;height:84px;" class="btn btn-primary">
-                        <span style="border-right:1px solid #34495e;">
-                            <i class="fa fa-facebook fa-5x" style="padding-right:31px;"></i>
+<div ng-controller = "mainController" align="center" style="position:relative;top:20%;">
+    <div class="login-container">
+        <div class="hpanel">
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <span ng-click="fbLogin();" style = "cursor:pointer;background-color:#3B5998;width:340px;text-align:left;border-radius:17px;height:84px;" class="btn btn-primary"> 
+                            <span style="border-right:1px solid #34495e;">
+                                <i class="fa fa-facebook fa-5x" style="padding-right:31px;"></i>
+                            </span>
+                            <span style="padding-left:23px;font-size:17px;font-weight:bold;">
+                                Login with Facebook
+                            </span> 
                         </span>
-                        <span style="padding-left:23px;font-size:17px;font-weight:bold;">
-                            Login with Facebook
+                    </div>
+                </div>
+                <br/>
+                <br/>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <span ng-click="gplusLogin();" style = "cursor:pointer;background-color:#dd4b39;width:340px;text-align:left;border-radius:17px;height:84px;" class="btn btn-primary">
+                           <span style="border-right:1px solid #34495e;">
+                                <i class="fa fa-google-plus fa-5x" style="padding-right:31px;"></i>
+                            </span>
+                            <span style="padding-left:23px;font-size:17px;font-weight:bold;">
+                                Login with Google
+                            </span>
                         </span>
-                    </span>
-                    <br/>
-                    <br/>
-                    
+                    </div>
                 </div>
             </div>
-    </div>
-    </div>
-    
-    <div class="row">
-        <div class="col-md-12 text-center">
-            <strong style="font-weight:bold;">Dhruv</strong> - The Expense Tracker <br/> 2015 Copyright Innovation Lab
         </div>
+        <strong style="font-weight:bold;">Dhruv - The Expense Tracker </strong> <br/> 2015 Copyright Innovation Lab  
     </div>
-    </div>
+</div>
 
     <!-- Vendor scripts -->
 <script src="app/vendor/jquery/dist/jquery.min.js"></script>
@@ -88,7 +84,7 @@
 <script src="app/lib/angular.js"></script>
 <script src="app/lib/angular-bootstrap.js"></script>
 <script src="app/lib/ng-google-chart.js"></script>
-
+<script src="app/lib/cookies.js"></script>
 <script src="app/controller/mainController.js"></script>
 <script src="app/controller/modalControllers.js"></script> 
 <script src="app/lib/bootstrap-dialog.js"></script>

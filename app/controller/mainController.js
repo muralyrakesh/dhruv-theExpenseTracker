@@ -1,170 +1,217 @@
-(function(){
-   
-    
-  var facebookLogin = function($rootScope, $window, sAuth) {
+function onLoadCallback() {
+    gapi.client.setApiKey('AIzaSyDIpHiHvSuv9IZyPGoSba5PgoiGN-qroGI');
+    gapi.client.load('plus', 'v1', function () {
 
-  $rootScope.user = {};
-
-  $window.fbAsyncInit = function() {
-    // Executed when the SDK is loaded
-
-    FB.init({ 
-
-      /* 
-       The app id of the web app;
-       To register a new app visit Facebook App Dashboard
-       ( https://developers.facebook.com/apps/ ) 
-      */
-
-        appId:'1400258100297949',
-      
-
-      /* 
-       Adding a Channel File improves the performance 
-       of the javascript SDK, by addressing issues 
-       with cross-domain communication in certain browsers. 
-      */
-
-      channelUrl: 'app/channel.html', 
-
-      /* 
-       Set if you want to check the authentication status
-       at the start up of the app 
-      */
-
-      status: true, 
-
-      /* 
-       Enable cookies to allow the server to access 
-       the session 
-      */
-
-      cookie: true, 
-
-      /* Parse XFBML */
-
-      xfbml: true 
     });
-      
-      FB.Event.subscribe('auth.login', function(){
-            window.location.href = 'index.html';
-        });
-      FB.Event.subscribe('auth.logout', function(){
-        window.location.href = 'login.html';
-    });
-    sAuth.watchLoginChange();
-
-  };
-
-  // Are you familiar to IIFE ( http://bit.ly/iifewdb ) ?
-
-  (function(d){
-    // load the Facebook javascript SDK
-
-    var js, 
-    id = 'facebook-jssdk', 
-    ref = d.getElementsByTagName('script')[0];
-
-    if (d.getElementById(id)) {
-      return;
-    }
-
-    js = d.createElement('script'); 
-    js.id = id; 
-    js.async = true;
-    js.src = "//connect.facebook.net/en_US/all.js";
-
-    ref.parentNode.insertBefore(js, ref);
-
-  }(document));
-
 }
-  
-  var authenticationServiceFactory = function($rootScope) {
+(function(){
+
+ var po = document.createElement('script');
+        po.type = 'text/javascript';
+        po.async = true;
+        po.src = 'https://apis.google.com/js/client.js?onload=onLoadCallback';
+        var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(po, s);
     
-      authenticationServiceFactory.login =function() {
-      
-          FB.login(function(response) {
-              console.log(response);
-              if (response.status === 'connected') {
-                  FB.api('/me', function(response) {
-
-                    $rootScope.$apply(function() { 
-                        $rootScope.user = response; 
-                        $rootScope.profilePic = "http://graph.facebook.com/"+$rootScope.user.id+"/picture?type=normal";
-                    });
-
-               });
-              } else {
-                window.location.href = 'login.html';
-              }
-              
-          });
-      
-      }
-      
-      authenticationServiceFactory.watchLoginChange = function() {
-          FB.Event.subscribe('auth.authResponseChange', function(res) {
-            if (res.status === 'connected') {
-              /* 
-               The user is already logged, 
-               is possible retrieve his personal info
-              */
-              FB.api('/me', function(res) {
-
-                    $rootScope.$apply(function() { 
-                        $rootScope.user = res; 
-                        $rootScope.profilePic = "http://graph.facebook.com/"+$rootScope.user.id+"/picture?type=normal";
-                    });
-
-               });
-
-              /*
-               This is also the point where you should create a 
-               session for the current user.
-               For this purpose you can use the data inside the 
-               res.authResponse object.
-              */
-
-            } else {
-              window.location.href = 'login.html';
-            }
-
-            });
-      }
+     
     
-    
-    authenticationServiceFactory.logout = function() {
+  var oAuthLogin = function($rootScope, $cookies, $window, sAuth) {
+    $rootScope.user = {};
 
-        FB.logout(function(response) {
 
-            $rootScope.$apply(function() { 
 
-              $rootScope.user = {}; 
-                window.location.href = 'login.html';
-
-            }); 
-
+    $window.fbAsyncInit = function() {
+        FB.init({ 
+            appId:'1400258100297949',
+            channelUrl: 'app/channel.html', 
+            status: true, 
+            cookie: true, 
+            xfbml: true 
         });
 
+            FB.Event.subscribe('auth.login', function(){
+                window.location.href = 'index.html';
+        });
+
+        sAuth.watchLoginChange();
+
+    };
+
+    (function(d){
+        var js, 
+        id = 'facebook-jssdk', 
+        ref = d.getElementsByTagName('script')[0];
+
+        if (d.getElementById(id)) {
+            return;
+        }
+
+        js = d.createElement('script'); 
+        js.id = id; 
+        js.async = true;
+        js.src = "//connect.facebook.net/en_US/all.js";
+
+        ref.parentNode.insertBefore(js, ref);
+
+    }(document));
+
+  }
+  
+  var authenticationServiceFactory = function($rootScope, $cookies) {
+    
+      authenticationServiceFactory.fbLogin =function() {
+        console.error($cookies['userName']);
+          if ($cookies['userName']) {
+              window.location.href = 'index.html';
+          } else {
+              FB.login();
+          }
+     }
+      
+    authenticationServiceFactory.shareAWord = function() {
+        FB.ui(
+       { 
+         method: 'stream.publish',
+         message: 'Try this cool tool to track all your expenses and savings.',
+         attachment: {
+           name: 'Dhruv',
+           caption: 'The Expense Tracker.',
+           description: (
+             'The simplest way to track your expense and savings.'
+           ),
+           href: 'http://localhost:8181/'
+         },
+         action_links: [
+           { text: 'Dhruv - The Expense Tracker', href: 'http://localhost:8181/dhruv-theExpenseTracker/login.html' }
+         ],
+         user_prompt_message: 'The simplest way to track your expense and savings'
+       },
+       function(response) {
+         if (response && response.post_id) {
+           //alert('Post was published.');
+         } else {
+           //alert('Post was not published.');
+         }
+       }
+     );  
+    }
+      
+    authenticationServiceFactory.fbLogout = function() {
+        FB.logout(); 
+    }
+    
+     authenticationServiceFactory.watchLoginChange = function() {
+         FB.Event.subscribe('auth.authResponseChange', function(res) {
+                
+                if (res.status === 'connected') {
+                    FB.api('/me', function(res) {
+
+                        $rootScope.$apply(function() { 
+                            $rootScope.user = res; 
+                            $rootScope.profilePic = "http://graph.facebook.com/"+$rootScope.user.id+"/picture?type=normal";
+                            $cookies['userName'] = $rootScope.user.name;
+                            $cookies['profilePic'] = $rootScope.profilePic;
+                            $cookies['login'] = 'facebook';
+                        });
+
+                    });
+
+                    
+                } else {
+                    $rootScope.$apply(function() { 
+                        window.location.href = 'login.html';
+                    });
+                     
+                }
+
+        });
+     }
+          
+    
+    authenticationServiceFactory.gPlusLogin = function() {
+        var myParams = {
+            // Replace client id with yours
+            'clientid': '61002307358-5n52s27tq5dhd1tpou3mu33tqiab400s.apps.googleusercontent.com',
+            'cookiepolicy': 'single_host_origin',
+            'callback': loginCallback,
+            'approvalprompt': 'force',
+            'scope': 'https://www.googleapis.com/auth/plus.login'
+        };
+        gapi.auth.signIn(myParams);
+
+        function loginCallback(result) {
+            if (result['status']['signed_in']) {
+
+                var request = gapi.client.plus.people.get({'userId': 'me'});
+                request.execute(function (resp) {
+                    $rootScope.$apply(function() { 
+                        console.log('Google+ Login RESPONSE: ' + angular.toJson(resp));
+                        var userEmail;
+                        if (resp['emails']) {
+                            for (var i = 0; i < resp['emails'].length; i++) {
+                                if (resp['emails'][i]['type'] == 'account') {
+                                    userEmail = resp['emails'][i]['value'];
+                                }
+                            }
+                        }
+                        $rootScope.user.name = resp.displayName;
+                        $rootScope.user.email = userEmail;
+                        if(resp.gender) {
+                            resp.gender.toString().toLowerCase() === 'male' ? $rootScope.user.gender = 'M' : $rootScope.user.gender = 'F';
+                        } else {
+                            $rootScope.user.gender = '';
+                        }
+                        $rootScope.profilePic = resp.image.url;
+                        $cookies['userName'] = $rootScope.user.name;
+                        $cookies['profilePic'] = $rootScope.profilePic;
+                        $cookies['login'] = 'google';
+                        window.location.href = 'index.html';
+                    });
+                   
+                });
+            }
+        }
+
+    }
+    
+    authenticationServiceFactory.gPlusLogout = function() {
+         window.location.href = 'login.html';
     }
     
     return authenticationServiceFactory;
   }
     
-    var mainController = function ($scope, $modal, $timeout, $rootScope, sAuth) {
+    var mainController = function ($scope, $modal, $timeout, $rootScope, $http, $cookies, sAuth) {
         $timeout(function() {
-                
                 $scope.logOutFromApp = function() {
-                    sAuth.logout();
-                
+                    if ($cookies['login'] === 'facebook') {
+                        sAuth.fbLogout();
+                    } else {
+                        sAuth.gPlusLogout();
+                    }
+                    delete $cookies['login'];
+                    delete $cookies['userName'];
+                    delete $cookies['profilePic'];
                 }
                 
                 $scope.fbLogin = function() {
-                    sAuth.login();
+                    sAuth.fbLogin();
                 }
                 
-                $scope.catagories = [];
+                $scope.gplusLogin = function () {
+                    sAuth.gPlusLogin();
+                };
+            
+            $scope.shareAWord = function() {
+                sAuth.shareAWord();
+                $scope.estimateClass = "";
+                    $scope.actualsClass = "";
+                    $scope.dashboardClass = "";
+                    $scope.spreadAWordClass = "active";   
+            }
+                
+            $scope.catagories = [];
+            
                 $scope.catagoryFilter = {cat:''};
                 $scope.showInformationStatistics = false;
                 $scope.showEstimates = true;
@@ -175,10 +222,16 @@
                 $scope.estimatesDashboardChartObject = {type:'PieChart'};
 
                 function init() {
+                     $rootScope.user.name = $cookies['userName'];
+                    $rootScope.profilePic = $cookies['profilePic'];
                     $scope.availableDurations = ['', 'Daily', 'Monthly', 'Quarterly', 'Halfyearly', 'Annually'];
                     $scope.estimatedDuration = '';
                     $scope.estimatedChecking = null;
                     $scope.estimatedSaving = null;
+                    $scope.estimateClass = "active";
+                    $scope.actualsClass = "";
+                    $scope.dashboardClass = "";
+                    $scope.spreadAWordClass = "";
                     $scope.allExpenses = [];
                     $scope.peekExpenses = [];
                     $scope.expense = {};
@@ -229,10 +282,18 @@
                         $scope.showActualsList = false;
                     }
                     $scope.showAllActuals = false;
+                    $scope.estimateClass = "";
+                    $scope.actualsClass = "";
+                    $scope.dashboardClass = "active";
+                    $scope.spreadAWordClass = "";
                 }
 
                 $scope.showEstimate = function() {
                     $scope.showInformationStatistics = false;
+                    $scope.estimateClass = "active";
+                    $scope.actualsClass = "";
+                    $scope.dashboardClass = "";
+                    $scope.spreadAWordClass = "";
                     $scope.showEstimates = true;
                     $scope.showActuals = false;
                     $scope.showAllActuals = false;
@@ -244,7 +305,10 @@
                     $scope.showAllActuals = true;
                     $scope.showAddExpense = false;
                     $scope.showEstimates = false;
-                    
+                    $scope.estimateClass = "";
+                    $scope.actualsClass = "active";
+                    $scope.dashboardClass = "";
+                    $scope.spreadAWordClass = "";                    
                 }
                 
                 $scope.deleteActual = function(exp, size) {
@@ -346,6 +410,17 @@
                         spending: 0,
                         duration: $scope.estimatedDuration
                     }
+                    
+                     $http({
+                            method : 'POST',
+                            data :estimate,
+                            url : 'http://localhost:8181/dhruv/ExpenseTrackingService/saveEstimate',
+                            headers : {
+                                'Content-Type' : 'application/json'
+                            }
+                    }).success(function(response){
+                        console.log(response)
+                    });
 
                     $scope.showInformationStatistics = true;
                     $scope.showEstimates = false;
@@ -469,9 +544,10 @@
         
         
     };
-    angular.module('dhruv', ['googlechart', 'ui.bootstrap']);
+    angular.module('dhruv', ['googlechart', 'ui.bootstrap', 'ngCookies']);
     angular.module('dhruv').factory('sAuth', authenticationServiceFactory);
-    angular.module('dhruv').run(facebookLogin);
+    angular.module('dhruv').run(oAuthLogin);
+    
     angular.module('dhruv').controller('mainController', mainController);
     
 }());
